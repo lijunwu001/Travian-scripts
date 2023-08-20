@@ -2699,7 +2699,8 @@ function demolish(aTask) {
 				var parser = new DOMParser();
 				var holder = parser.parseFromString(httpRequest.responseText, "text/html");
 
-				var reqVID = getActiveVillage(holder);
+				//var reqVID = getActiveVillage(holder);
+				var reqVID = holder.getElementsByClassName("villageList")[0].getElementsByClassName("active")[0].getAttribute("data-did");
 				if ( reqVID == oldVID && holder.getElementsByClassName("gid15").length == 1 ) {
 					var tmp = holder.getElementById("demolish");
 					var tmp2;
