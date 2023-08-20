@@ -2700,7 +2700,6 @@ function demolish(aTask) {
 				var holder = parser.parseFromString(httpRequest.responseText, "text/html");
 
 				var reqVID = getActiveVillage(holder);
-
 				if ( reqVID == oldVID && holder.getElementsByClassName("gid15").length == 1 ) {
 					var tmp = holder.getElementById("demolish");
 					var tmp2;
@@ -3263,10 +3262,17 @@ function handleTimerForm(oForm, iAction, taskindex, villagedid, buildingGID) {
 		var timeUnit = oForm.elements["timeUnit"].value;
 		var oDate = new Date();  // current GMT date. TODO: server time
 
-		if (after.indexOf(",") > -1) {
-			var arrafter = after.split(",");
+		if (after.indexOf(",") > -1 || after.indexOf(" ") > -1) {
+			var arrafter = after.split(/[, ]/);
+			var accumulateSeconds = 0;
 			for (var i=0; i<arrafter.length; i++) {
-				iTaskTime[i] = Math.floor(oDate.getTime()/1000 + arrafter[i]*timeUnit + ttqRandomNumber());
+				if (arrafter[i].includes(":")) {
+					var timeArray = arrafter[i].split(":");
+					accumulateSeconds += parseInt(timeArray[0])*3600+parseInt(timeArray[1])*60+parseInt(timeArray[2]);
+					iTaskTime[i] = oDate.getTime()/1000 + accumulateSeconds + 40*(i+1);
+				} else {
+					iTaskTime[i] = Math.floor(oDate.getTime()/1000 + arrafter[i]*timeUnit + ttqRandomNumber());
+				}
 			}
 		} else {
 			iTaskTime[0] = Math.floor(oDate.getTime()/1000 + after*timeUnit);
